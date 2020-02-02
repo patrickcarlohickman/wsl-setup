@@ -1,0 +1,1 @@
+<your-wsl-username> ALL=(root) NOPASSWD: /usr/local/bin/startup.sh

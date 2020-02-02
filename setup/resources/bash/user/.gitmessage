@@ -1,0 +1,13 @@
+# If applied, this commit will... (summary of what the commit will do)
+
+
+# Longer description as to why this commit was needed...
+
+
+# What code changes were made by the commit?
+# -
+# What issue/task tracking actions to take?
+# JIRA Ticket: <TASK-ID> [#transition] [#comment <comment-text>] [#time <time-text> <work-log-text>]
+# BitBucket: <Closes/Fixes/Resolves | Reopens | Holds | Invalidates | Addresses/References/See | Wontfix> [issue/bug/ticket] #number
+# Github: <Close/Closes/Closed/Fix/Fixes/Fixed/Resolve/Resolves/Resolved> [username/repository]#number
+# -
