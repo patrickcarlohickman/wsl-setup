@@ -3,7 +3,7 @@
 source "$(dirname "$(readlink -f "${0}")")/init-install.sh"
 
 ensure_root
-#ensure_not_installed "FreeTDS"
+ensure_not_installed "FreeTDS"
 
 readonly ODBC_INSTALL_FILE="${ODBC_INSTALL_FILE:-/etc/odbcinst.ini}"
 
