@@ -198,6 +198,10 @@ function is_freetds_installed {
   [[ $? -eq 0 ]] && echo "yes"
 }
 
+function is_yarn_installed {
+  [[ -n "$(which yarn)" ]] && echo "yes"
+}
+
 function ensure_php_executable {
   local php="$@"
   
