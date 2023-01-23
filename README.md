@@ -58,6 +58,5 @@ Contributions are welcome. Please see [CONTRIBUTING](CONTRIBUTING.md) for detail
 The MIT License (MIT). Please see [License File](LICENSE.txt) for more information.
 
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-
 [link-author]: https://github.com/patrickcarlohickman
 [link-contributors]: ../../contributors

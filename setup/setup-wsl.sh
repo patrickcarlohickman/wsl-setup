@@ -11,7 +11,7 @@ ensure_variable_set "WSL_USER"
 function main {
   local -r YN_OPTIONS=("Yes (continue)" "No (exit)")
   local SELECTED
-  
+
   echo "Are the values in the .env file correct?"
   select SELECTED in "${YN_OPTIONS[@]}"; do
     case "${SELECTED}" in
@@ -26,13 +26,13 @@ function main {
     esac
     echo "Please choose a number from the menu above."
   done
-  
+
   log_info "Preparing new WSL installation for use."
   prepare_installation
-  
+
   log_info "Installing user files from setup resources."
   install_user_files
-  
+
   log_info "Installing user SSH keys."
   install_ssh_keys
 
@@ -44,10 +44,10 @@ function main {
 
   run_installer "install-apache.sh"
   run_installer "install-ngrok.sh"
-  
+
   run_installer "install-mysql.sh"
   run_installer "install-redis.sh"
-  
+
   run_installer "install-nvm-global.sh"
   
   install_freetds
@@ -55,19 +55,19 @@ function main {
 
 function prepare_installation {
   debconf-set-selections <<< "* libraries/restart-without-asking boolean true"
-  
+
   log_info "Upgrading distribution."
   upgrade_distribution
-  
+
   log_info "Installing WSL conf file."
   install_wsl_conf
-  
+
   log_info "Setting system timezone."
   set_timezone
-  
+
   log_info "Installing startup script."
   install_startup_script
-  
+
   log_info "Installing initial WSL sudoers file."
   install_wsl_sudoers
 
@@ -179,58 +179,58 @@ function install_ssh_keys {
     log_warning "SSH keys are already installed."
     return 1
   fi
-  
+
   local -r WIN_USER_DIRECTORY="$(wslpath "$(windows_env_value "USERPROFILE")")"
-  
+
   if [[ ! -f "${WIN_USER_DIRECTORY}/.ssh/id_rsa" ]]; then
     log_info "No Windows SSH keys available. Creating new SSH keys."
-    
+
     create_new_ssh_key
-    
+
     return 0
   fi
-  
+
   local -r OPTIONS=("Create new SSH key" "Copy SSH keys from Windows host" "Skip")
   local -r SSH_DEFAULT_SELECT="${SSH_DEFAULT_SELECT:-0}"
   local SELECTED
-  
+
   if [[ ${SSH_DEFAULT_SELECT} -gt 0 && ${SSH_DEFAULT_SELECT} -le ${#OPTIONS[@]} ]]; then
     local -r INDEX=$((${SSH_DEFAULT_SELECT} - 1))
     SELECTED="${OPTIONS[${INDEX}]}"
-    
+
     case "${SELECTED}" in
         "${OPTIONS[0]}")
           log_info "Creating new SSH keys (default chosen by env)."
-          
+
           create_new_ssh_key
           ;;
         "${OPTIONS[1]}")
           log_info "Copying Windows SSH keys (default chosen by env)."
-          
+
           copy_windows_ssh_keys
           ;;
     esac
-    
+
     return 0
   fi
-  
+
   select SELECTED in "${OPTIONS[@]}"; do
     case "${SELECTED}" in
         "${OPTIONS[0]}")
           log_info "Creating new SSH keys."
-          
+
           create_new_ssh_key
           break
           ;;
         "${OPTIONS[1]}")
           log_info "Copying Windows SSH keys."
-          
+
           copy_windows_ssh_keys
           break
           ;;
         "${OPTIONS[2]}")
           log_info "Skipping SSH keys. No SSH keys will be available."
-          
+
           break
           ;;
     esac
@@ -241,11 +241,11 @@ function install_ssh_keys {
 function create_new_ssh_key {
   local -r WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
   local SSH_EMAIL_ADDRESS="${SSH_EMAIL_ADDRESS}"
-  
+
   [[ -n "$(is_ssh_key_installed)" ]] && return 1
-  
+
   [[ -z "${SSH_EMAIL_ADDRESS}" ]] && read -e -p "Email address for SSH key: " SSH_EMAIL_ADDRESS
-  
+
   export WSL_USER_DIRECTORY SSH_EMAIL_ADDRESS
   su "${WSL_USER}" -c 'cat /dev/zero | ssh-keygen -t rsa -b 4096 -q -f "${WSL_USER_DIRECTORY}/.ssh/id_rsa" -N "" -C "${SSH_EMAIL_ADDRESS}" > /dev/null'
 }
@@ -253,9 +253,9 @@ function create_new_ssh_key {
 function copy_windows_ssh_keys {
   local -r WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
   local -r WIN_USER_DIRECTORY="$(wslpath "$(windows_env_value "USERPROFILE")")"
-  
+
   [[ ! -f "${WIN_USER_DIRECTORY}/.ssh/id_rsa" ]] && return 1
-  
+
   mkdir "${WSL_USER_DIRECTORY}/.ssh"
   cp "${WIN_USER_DIRECTORY}/.ssh/id_rsa" "${WSL_USER_DIRECTORY}/.ssh/"
   cp "${WIN_USER_DIRECTORY}/.ssh/id_rsa.pub" "${WSL_USER_DIRECTORY}/.ssh/"
@@ -268,18 +268,18 @@ function copy_windows_ssh_keys {
 
 function is_ssh_key_installed {
   local -r WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
-  
+
   [[ -f "${WSL_USER_DIRECTORY}/.ssh/id_rsa" ]] && echo "yes"
 }
 
 function install_freetds {
   run_installer "install-freetds.sh"
-  
+
   if [[ -s "$(script_dir)/resources/freetds/odbc.ini" ]]; then
     cp "$(script_dir)/resources/freetds/odbc.ini" "/etc/odbc.ini"
     chmod 644 "/etc/odbc.ini"
   fi
-  
+
   if [[ -s "$(script_dir)/resources/freetds/freetds.conf" ]]; then
     cp "$(script_dir)/resources/freetds/freetds.conf" "/etc/freetds/freetds.conf"
     chmod 644 "/etc/freetds/freetds.conf"
