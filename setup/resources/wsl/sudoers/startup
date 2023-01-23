@@ -1,0 +1,1 @@
+stub-user ALL=(root) NOPASSWD: /usr/local/bin/startup.sh

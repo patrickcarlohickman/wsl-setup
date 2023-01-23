@@ -91,8 +91,37 @@ function install_startup_script {
 }
 
 function install_wsl_sudoers {
-  cp "$(script_dir)/resources/wsl/wsl-sudoers" "/etc/sudoers.d/wsl-sudoers"
-  chmod 440 "/etc/sudoers.d/wsl-sudoers"
+  local -r SUDOERS="/etc/sudoers"
+  local -r SUDOERS_DIRECTORY="/etc/sudoers.d"
+  local -r RESOURCE_DIRECTORY="$(script_dir)/resources/wsl/sudoers"
+  local -r STUB_USER_PLACEHOLDER="stub-user"
+  local -r TEMP_DIRECTORY="$(mktemp -d -t sudoers-XXXXXXXXXX)"
+
+  if [[ -z "${TEMP_DIRECTORY}" ]]; then
+    log_warning "Temp directory not created. Could not install sudoers files."
+    return 1
+  fi
+
+  # Copy all the resource files to a temp directory so they can be modified.
+  cp "${RESOURCE_DIRECTORY}"/* "${TEMP_DIRECTORY}"
+  for file in $(ls "${TEMP_DIRECTORY}"); do
+    sed -i "s#${STUB_USER_PLACEHOLDER}#${WSL_USER}#g" "${TEMP_DIRECTORY}/${file}"
+  done
+
+  # If the sudoers dir exists, just copy all the resource files into
+  # the directory. Otherwise, append the contents of all the
+  # resource files to the end of the sudoers file.
+  if [[ -d "${SUDOERS_DIRECTORY}" ]]; then
+    cp "${TEMP_DIRECTORY}"/* "${SUDOERS_DIRECTORY}"
+    chmod -R 440 "${SUDOERS_DIRECTORY}"
+  else
+    for file in $(ls "${TEMP_DIRECTORY}"); do
+      echo | EDITOR='tee -a' visudo
+      cat "${TEMP_DIRECTORY}/${file}" | EDITOR='tee -a' visudo
+    done
+  fi
+
+  rm -rf "${TEMP_DIRECTORY}"
 }
 
 function install_user_files {
