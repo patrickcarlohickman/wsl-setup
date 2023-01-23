@@ -69,6 +69,9 @@ function prepare_installation {
   
   log_info "Installing initial WSL sudoers file."
   install_wsl_sudoers
+
+  log_info "Installing ssh config."
+  install_ssh_config
 }
 
 function upgrade_distribution {
@@ -122,6 +125,25 @@ function install_wsl_sudoers {
   fi
 
   rm -rf "${TEMP_DIRECTORY}"
+}
+
+function install_ssh_config {
+  local -r SSH_CONFIG="/etc/ssh/ssh_config"
+  local -r SSH_CONFIG_DIRECTORY="/etc/ssh/ssh_config.d"
+  local -r RESOURCE_DIRECTORY="$(script_dir)/resources/wsl/ssh_config"
+
+  # If the config dir exists, just copy all the resource configs into
+  # the directory. Otherwise, append the contents of all the
+  # resource configs to the end of the ssh_config file.
+  if [[ -d "${SSH_CONFIG_DIRECTORY}" ]]; then
+    cp "${RESOURCE_DIRECTORY}"/* "${SSH_CONFIG_DIRECTORY}"
+    chmod 644 "${SSH_CONFIG_DIRECTORY}"/*
+  else
+    for file in $(ls "${RESOURCE_DIRECTORY}"); do
+      echo >> "${SSH_CONFIG}"
+      cat "${RESOURCE_DIRECTORY}/${file}" >> "${SSH_CONFIG}"
+    done
+  fi
 }
 
 function install_user_files {
