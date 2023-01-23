@@ -285,12 +285,4 @@ function install_freetds {
   fi
 }
 
-function run_installer {
-  local -r INSTALLER="${1}"
-  
-  "$(script_dir)/installers/${INSTALLER}"
-  
-  return $?
-}
-
 main

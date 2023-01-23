@@ -8,6 +8,10 @@ readonly COLOR_RED=${COLOR_RED:-"\e[1;91m"}
 readonly COLOR_GREEN=${COLOR_GREEN:-"\e[1;92m"}
 readonly COLOR_YELLOW=${COLOR_YELLOW:-"\e[1;93m"}
 
+readonly SETUP_ROOT_DIR="$(dirname $(readlink -f "${BASH_SOURCE}"))"
+readonly SETUP_INSTALLERS_DIR="${SETUP_ROOT_DIR}/installers"
+readonly SETUP_RESOURCES_DIR="${SETUP_ROOT_DIR}/resources"
+
 function script_name {
   echo "$(basename "${0}")"
 }
@@ -42,6 +46,18 @@ function log_info {
 
 function log_debug {
   log "$@" "DEBUG"
+}
+
+function setup_root_dir {
+  echo "${SETUP_ROOT_DIR}"
+}
+
+function setup_installers_dir {
+  echo "${SETUP_INSTALLERS_DIR}"
+}
+
+function setup_resources_dir {
+  echo "${SETUP_RESOURCES_DIR}"
 }
 
 function wsl_user_directory {
@@ -264,6 +280,16 @@ function windows_env_value {
 
 function version_compare {
   dpkg --compare-versions "${1}" "${2}" "${3}"
+
+  return $?
+}
+
+function run_installer {
+  local -r INSTALLER="${1}"
+
+  shift
+
+  "$(setup_installers_dir)/${INSTALLER}" "$@"
 
   return $?
 }
