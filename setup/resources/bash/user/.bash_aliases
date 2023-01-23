@@ -1,3 +1,5 @@
+alias startup="sudo /usr/local/bin/startup.sh"
+
 alias phpunit="./vendor/bin/phpunit"
 alias phpcs="./vendor/bin/phpcs"
 alias paratest="./vendor/bin/paratest"
