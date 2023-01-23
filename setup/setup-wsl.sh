@@ -147,17 +147,28 @@ function install_ssh_config {
 }
 
 function install_user_files {
-  local -r TEMP_DIRECTORY="$(mktemp -d -t user-XXXXXXXXXX)"
+  local -r RESOURCE_DIRECTORY="$(script_dir)/resources/bash/user"
   local -r WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
-  
-  [[ -z "${TEMP_DIRECTORY}" ]] && return 1
-  
-  cp -r "$(script_dir)/resources/bash/user" "${TEMP_DIRECTORY}"
-  
+  local -r TEMP_DIRECTORY="$(mktemp -d -t user-XXXXXXXXXX)"
+  local -r STUB_GIT_USER_PLACEHOLDER="stub-git-user"
+  local -r STUB_GIT_EMAIL_PLACEHOLDER="stub-git-email"
+
+  if [[ -z "${TEMP_DIRECTORY}" ]]; then
+    log_warning "Temp directory not created. Could not install user files."
+    return 1
+  fi
+
+  # Copy all the resource files to a temp directory so they can be modified.
+  cp -r "${RESOURCE_DIRECTORY}" "${TEMP_DIRECTORY}"
+
+  # Update the .gitconfig with the user name and email address.
+  sed -i "s#${STUB_GIT_USER_PLACEHOLDER}#${GIT_USER_NAME}#g" "${TEMP_DIRECTORY}/user/.gitconfig"
+  sed -i "s#${STUB_GIT_EMAIL_PLACEHOLDER}#${GIT_EMAIL_ADDRESS}#g" "${TEMP_DIRECTORY}/user/.gitconfig"
+
   chown -R "${WSL_USER}":"${WSL_USER}" "${TEMP_DIRECTORY}"
   find "${TEMP_DIRECTORY}" -type d -exec chmod 755 {} \;
   find "${TEMP_DIRECTORY}" -type f -exec chmod 644 {} \;
-  
+
   mv -f "${TEMP_DIRECTORY}/user/"* "${TEMP_DIRECTORY}/user/".[!.]* "${TEMP_DIRECTORY}/user/"..?* "${WSL_USER_DIRECTORY}" 2> /dev/null
   rm -rf "${TEMP_DIRECTORY}"
 }
