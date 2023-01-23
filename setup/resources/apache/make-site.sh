@@ -10,9 +10,11 @@ readonly NEW_SITE_DOMAIN="${1}"
 readonly NEW_SITE_DIRECTORY="${2:-${1}}"
 readonly NGROK_START_NAME="${3:-${1}}"
 
+readonly VHOST_DIRECTORY="${VHOST_DIRECTORY:-/var/www/vhost}"
 readonly SITES_DIRECTORY="/etc/apache2/sites-available"
 readonly STUB_FILENAME="apache-site-stub.conf"
 readonly STUB_DOMAIN_PLACEHOLDER="stub-domain"
+readonly STUB_VHOST_DIRECTORY_PLACEHOLDER="stub-vhost"
 readonly STUB_DIRECTORY_PLACEHOLDER="stub-folder"
 readonly NGROK_DIRECTORY="${NGROK_DIRECTORY:-/opt/ngrok}"
 readonly NGROK_CONFIG="${NGROK_DIRECTORY}/conf/ngrok.yml"
@@ -35,6 +37,7 @@ cp "${STUB_FILE}" "${NEW_SITE_CONFIG}"
 
 # Replace the stub placeholders with the new site values.
 sed -i "s#${STUB_DOMAIN_PLACEHOLDER}#${NEW_SITE_DOMAIN}#g" "${NEW_SITE_CONFIG}"
+sed -i "s#${STUB_VHOST_DIRECTORY_PLACEHOLDER}#${VHOST_DIRECTORY}#g" "${NEW_SITE_CONFIG}"
 sed -i "s#${STUB_DIRECTORY_PLACEHOLDER}#${NEW_SITE_DIRECTORY}#g" "${NEW_SITE_CONFIG}"
 
 # Make sure the DocumentRoot directory of the new site actually exists.

@@ -7,6 +7,7 @@ ensure_not_installed "Apache"
 ensure_variable_set "WSL_USER"
 
 readonly WSL_USER
+readonly VHOST_DIRECTORY="${VHOST_DIRECTORY:-/var/www/vhost}"
 
 log_info "Installing Apache. This may take a few minutes..."
 
@@ -26,6 +27,13 @@ a2enmod ssl
 a2enmod headers
 a2enmod rewrite
 a2enmod expires
+
+log_info "Creating vhost directory."
+
+if [[ ! -d "${VHOST_DIRECTORY}" ]]; then
+  mkdir -p "${VHOST_DIRECTORY}"
+  chmod 777 "${VHOST_DIRECTORY}"
+fi
 
 log_info "Enabling all available sites."
 
