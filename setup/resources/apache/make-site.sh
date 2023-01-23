@@ -7,7 +7,7 @@ function usage {
 }
 
 readonly NEW_SITE_DOMAIN="${1}"
-readonly NEW_SITE_DIRECTORY="${2:-${1}}"
+readonly NEW_SITE_DIRECTORY="${2:-${1}/public}"
 readonly NGROK_START_NAME="${3:-${1}}"
 
 readonly VHOST_DIRECTORY="${VHOST_DIRECTORY:-/var/www/vhost}"
