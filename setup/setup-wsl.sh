@@ -49,7 +49,8 @@ function main {
   run_installer "install-redis.sh"
 
   run_installer "install-nvm-global.sh"
-  
+  run_installer "install-yarn.sh"
+
   install_freetds
 }
 
