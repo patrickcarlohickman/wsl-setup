@@ -74,14 +74,21 @@ fi
 
 # Add the domain to the ngrok config if it exists.
 if [ -f "${NGROK_CONFIG}" ]; then
-  log_info "Adding ${NGROK_START_NAME} to ngrok config."
-  
-  cat << EOF >> "${NGROK_CONFIG}"
+  egrep -qi "^\s*${NGROK_START_NAME}:\s*$" "${NGROK_CONFIG}"
+  if [[ $? -ne 0 ]]; then
+    log_info "Adding ${NGROK_START_NAME} to ngrok config."
+
+    cat << EOF >> "${NGROK_CONFIG}"
   ${NGROK_START_NAME}:
     proto: http
     addr: 80
     host_header: www.${NEW_SITE_DOMAIN}.test
 EOF
+  else
+    log_warning "${NGROK_START_NAME} already exists in ngrok config."
+  fi
+else
+  log_warning "ngrok config file does not exist at ${NGROK_CONFIG}."
 fi
 
 # Generate the openssl private key if it doesn't exist
