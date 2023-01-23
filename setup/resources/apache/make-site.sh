@@ -3,12 +3,13 @@
 source "$(dirname "$(dirname "$(readlink -f "${0}")")")/init-resource.sh"
 
 function usage {
-  echo "Usage: $(script_name) < domain > [ directory [ ngrok_start_name ] ]"
+  echo "Usage: $(script_name) < domain > < php_version > [ directory [ ngrok_start_name ] ]"
 }
 
 readonly NEW_SITE_DOMAIN="${1}"
-readonly NEW_SITE_DIRECTORY="${2:-${1}/public}"
-readonly NGROK_START_NAME="${3:-${1}}"
+readonly PHP_VERSION="${2}"
+readonly NEW_SITE_DIRECTORY="${3:-${1}/public}"
+readonly NGROK_START_NAME="${4:-${1}}"
 
 readonly VHOST_DIRECTORY="${VHOST_DIRECTORY:-/var/www/vhost}"
 readonly SITES_DIRECTORY="/etc/apache2/sites-available"
@@ -16,6 +17,7 @@ readonly STUB_FILENAME="apache-site-stub.conf"
 readonly STUB_DOMAIN_PLACEHOLDER="stub-domain"
 readonly STUB_VHOST_DIRECTORY_PLACEHOLDER="stub-vhost"
 readonly STUB_DIRECTORY_PLACEHOLDER="stub-folder"
+readonly STUB_PHP_VERSION_PLACEHOLDER="stub-php-version"
 readonly NGROK_DIRECTORY="${NGROK_DIRECTORY:-/opt/ngrok}"
 readonly NGROK_CONFIG="${NGROK_DIRECTORY}/conf/ngrok.yml"
 readonly STUB_FILE="$(script_dir)/${STUB_FILENAME}"
@@ -28,6 +30,8 @@ fi
 
 ensure_root
 ensure_installed "Apache"
+ensure_installed "PHPENV" "PHPENV is required but is not found at ${PHPENV_ROOT} or is not loaded. If using sudo, make sure to use a login shell (sudo -i)."
+ensure_installed "phpenv_version-${PHP_VERSION}" "PHP version [${PHP_VERSION}] is required but is not installed."
 ensure_file_exists "${STUB_FILE}"
 ensure_file_missing "${NEW_SITE_CONFIG}"
 
@@ -40,6 +44,7 @@ cp "${STUB_FILE}" "${NEW_SITE_CONFIG}"
 sed -i "s#${STUB_DOMAIN_PLACEHOLDER}#${NEW_SITE_DOMAIN}#g" "${NEW_SITE_CONFIG}"
 sed -i "s#${STUB_VHOST_DIRECTORY_PLACEHOLDER}#${VHOST_DIRECTORY}#g" "${NEW_SITE_CONFIG}"
 sed -i "s#${STUB_DIRECTORY_PLACEHOLDER}#${NEW_SITE_DIRECTORY}#g" "${NEW_SITE_CONFIG}"
+sed -i "s#${STUB_PHP_VERSION_PLACEHOLDER}#${PHP_VERSION}#g" "${NEW_SITE_CONFIG}"
 
 # Make sure the DocumentRoot directory of the new site actually exists.
 if [[ "$(grep -m 1 "DocumentRoot" "${NEW_SITE_CONFIG}")" =~ DocumentRoot[[:blank:]]+(.+) ]]; then

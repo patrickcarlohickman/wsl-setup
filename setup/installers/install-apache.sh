@@ -27,6 +27,9 @@ a2enmod ssl
 a2enmod headers
 a2enmod rewrite
 a2enmod expires
+# Enable proxy modules for php-fpm
+a2enmod proxy
+a2enmod proxy_fcgi
 
 log_info "Creating vhost directory."
 
