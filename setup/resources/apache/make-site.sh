@@ -29,6 +29,7 @@ fi
 ensure_root
 ensure_installed "Apache"
 ensure_file_exists "${STUB_FILE}"
+ensure_file_missing "${NEW_SITE_CONFIG}"
 
 log_info "Setting up new site config file."
 

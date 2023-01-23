@@ -269,6 +269,15 @@ function ensure_file_exists {
   fi
 }
 
+function ensure_file_missing {
+  local -r FILE="${1}"
+
+  if [[ -f "${FILE}" ]]; then
+    log_error "File ${FILE} already exists."
+    exit 1
+  fi
+}
+
 function windows_env_value {
   local -r VAR="${1}"
   local value="$(/mnt/c/Windows/System32/cmd.exe /C "echo %${VAR}%")"
