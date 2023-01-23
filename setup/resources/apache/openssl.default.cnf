@@ -235,7 +235,7 @@ subjectKeyIdentifier=hash
 
 authorityKeyIdentifier=keyid:always,issuer
 
-basicConstraints = critical,CA:true
+# basicConstraints = critical,CA:true
 
 subjectAltName = @alt_names
 
