@@ -215,6 +215,18 @@ function is_phpenv_installed {
   [[ -s "${PHPENV_ROOT}/bin/phpenv" ]] && [[ -n "$(which phpenv)" ]] && echo "yes"
 }
 
+function is_phpenv_version_installed {
+  local -r VERSION="${1}"
+
+  [[ -n "$(is_phpenv_installed)" ]] && phpenv versions | egrep -q "(^|\s+)${VERSION}(\s+|$)"
+
+  [[ $? -eq 0 ]] && echo "yes"
+}
+
+function phpenv_latest_version {
+  [[ -n "$(is_phpenv_installed)" ]] && echo "$(phpenv install -l | grep -v snapshot | tail -n 1 | tr -d "[:space:]")"
+}
+
 function ensure_php_executable {
   local php="$@"
 
@@ -248,4 +260,10 @@ function windows_env_value {
   local value="$(/mnt/c/Windows/System32/cmd.exe /C "echo %${VAR}%")"
 
   echo "${value//$'\r'}"
+}
+
+function version_compare {
+  dpkg --compare-versions "${1}" "${2}" "${3}"
+
+  return $?
 }
