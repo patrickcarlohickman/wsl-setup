@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Turn on the option to auto export all variables and functions created/modified.
 set -a
 source "$(dirname $(readlink -f "${0}"))/.env"
 source "$(dirname $(readlink -f "${0}"))/common.sh"
