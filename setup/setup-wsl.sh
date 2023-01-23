@@ -35,12 +35,13 @@ function main {
   
   log_info "Installing user SSH keys."
   install_ssh_keys
-  
-  log_info "Installing initial software (PHP, Composer, Apache, Ngrok, MySQL, Redis, NVM)."
-  
-  run_installer "install-php72.sh"
-  run_installer "install-composer.sh"
-  
+
+  log_info "Installing initial software (PHP, Composer, Apache, Ngrok, MySQL, Redis, NVM, yarn, FreeTDS)."
+
+  run_installer "install-phpenv-global.sh"
+  install_global_php
+  install_composer
+
   run_installer "install-apache.sh"
   run_installer "install-ngrok.sh"
   
@@ -283,6 +284,50 @@ function install_freetds {
     cp "$(script_dir)/resources/freetds/freetds.conf" "/etc/freetds/freetds.conf"
     chmod 644 "/etc/freetds/freetds.conf"
   fi
+}
+
+function install_global_php {
+  # Run the logic inside a new login shell to ensure PHPENV is loaded.
+  # Unescaped $ will expand in the current context, escaped $ will
+  # expand in the new shell context.
+  sudo -i bash <<EOF
+  set -a
+  source "$(script_dir)/.env"
+  source "$(script_dir)/common.sh"
+  set +a
+
+  PHP_VERSION="\${GLOBAL_PHP_VERSION:-latest}"
+
+  log_info "Installing PHP version \${PHP_VERSION} globally."
+
+  if [[ "\${PHP_VERSION}" == "latest" ]]; then
+    PHP_VERSION="\$(phpenv_latest_version)"
+
+    log_info "Latest PHP version resolved to \${PHP_VERSION}."
+  fi
+
+  run_installer "install-php.sh" "\${PHP_VERSION}"
+
+  if [[ -n "\$(is_phpenv_version_installed \${PHP_VERSION})" ]]; then
+    log_info "Setting PHP version \${PHP_VERSION} as global."
+
+    phpenv global \${PHP_VERSION} > /dev/null
+  fi
+EOF
+}
+
+function install_composer {
+  # Run the logic inside a new login shell to ensure PHPENV is loaded.
+  # Unescaped $ will expand in the current context, escaped $ will
+  # expand in the new shell context.
+  sudo -i bash <<EOF
+  set -a
+  source "$(script_dir)/.env"
+  source "$(script_dir)/common.sh"
+  set +a
+
+  run_installer "install-composer.sh"
+EOF
 }
 
 main

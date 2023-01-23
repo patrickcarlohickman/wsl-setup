@@ -188,9 +188,7 @@ function is_apache_installed {
 }
 
 function is_php_installed {
-  dpkg -l | egrep "ii\s*php[0-9\.]+\s+" > /dev/null
-
-  [[ $? -eq 0 ]] && echo "yes"
+  [[ -n "$(which php)" ]] && echo "yes"
 }
 
 function is_ngrok_installed {
