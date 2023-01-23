@@ -6,6 +6,7 @@ source "$(dirname $(readlink -f "${0}"))/common.sh"
 set +a
 
 ensure_root
+ensure_variable_set "WSL_USER"
 
 function main {
   local -r YN_OPTIONS=("Yes (continue)" "No (exit)")

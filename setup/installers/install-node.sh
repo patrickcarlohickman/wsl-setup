@@ -3,8 +3,9 @@
 source "$(dirname "$(readlink -f "${0}")")/init-install.sh"
 
 ensure_root
+ensure_variable_set "WSL_USER"
 
-readonly WSL_USER="${WSL_USER:-patrick}"
+readonly WSL_USER
 readonly NVM_DIR="${NVM_DIR:-${NVM_DIR_GLOBAL:-/opt/nvm}}"
 readonly INSTALL_NODE_VERSION="${INSTALL_NODE_VERSION:-v10.11.0}"
 readonly COMMON="$(dirname "$(dirname "$(readlink -f "${0}")")")/common.sh"

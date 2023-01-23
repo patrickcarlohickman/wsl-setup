@@ -4,8 +4,9 @@ source "$(dirname "$(readlink -f "${0}")")/init-install.sh"
 
 ensure_root
 ensure_not_installed "MySQL"
+ensure_variable_set "WSL_USER"
 
-readonly WSL_USER="${WSL_USER:-patrick}"
+readonly WSL_USER
 readonly MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-root}"
 readonly MYSQL_USER_NAME="${MYSQL_USER_NAME:-homestead}"
 readonly MYSQL_USER_PASSWORD="${MYSQL_USER_PASSWORD:-secret}"

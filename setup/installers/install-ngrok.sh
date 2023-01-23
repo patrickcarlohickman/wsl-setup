@@ -4,10 +4,11 @@ source "$(dirname "$(readlink -f "${0}")")/init-install.sh"
 
 ensure_root
 ensure_not_installed "ngrok"
+ensure_variable_set "WSL_USER"
 resolve_system_dependencies "wget" "unzip"
 ensure_system_dependencies "wget" "unzip"
 
-readonly WSL_USER="${WSL_USER:-patrick}"
+readonly WSL_USER
 readonly NGROK_DIRECTORY="${NGROK_DIRECTORY:-/opt/ngrok}"
 readonly NGROK_DOWNLOAD_LINK="${NGROK_DOWNLOAD_LINK:-https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip}"
 readonly NGROK_DOWNLOAD_FILE="${NGROK_DOWNLOAD_LINK##*/}"

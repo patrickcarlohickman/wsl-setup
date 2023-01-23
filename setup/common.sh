@@ -146,6 +146,13 @@ function ensure_not_installed {
   fi
 }
 
+function ensure_variable_set {
+  if [[ -z "${!1}" ]]; then
+    log_error "Variable ${1} is required but is either not set or is empty."
+    exit 1
+  fi
+}
+
 function is_mysql_installed {
   dpkg -l | egrep "ii\s*mysql-server\S*\s+" > /dev/null
 

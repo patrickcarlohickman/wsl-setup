@@ -4,8 +4,9 @@ source "$(dirname "$(readlink -f "${0}")")/init-install.sh"
 
 ensure_root
 ensure_not_installed "Apache"
+ensure_variable_set "WSL_USER"
 
-readonly WSL_USER="${WSL_USER:-patrick}"
+readonly WSL_USER
 
 log_info "Installing Apache. This may take a few minutes..."
 
