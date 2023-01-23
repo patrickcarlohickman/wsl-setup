@@ -61,13 +61,13 @@ sed -i "s#${STUB_PHP_VERSION_PLACEHOLDER}#${PHP_VERSION}#g" "${NEW_SITE_CONFIG}"
 # Make sure the DocumentRoot directory of the new site actually exists.
 if [[ "$(grep -m 1 "DocumentRoot" "${NEW_SITE_CONFIG}")" =~ DocumentRoot[[:blank:]]+(.+) ]]; then
   readonly DOCUMENT_ROOT="${BASH_REMATCH[1]}"
-  
+
   if [[ ! -d "${DOCUMENT_ROOT}" ]]; then
     log_error "Configured document root ${DOCUMENT_ROOT} does not exist."
     log_error "Removing site config ${NEW_SITE_CONFIG}"
-    
+
     rm -f "${NEW_SITE_CONFIG}"
-    
+
     exit 1
   fi
 fi
