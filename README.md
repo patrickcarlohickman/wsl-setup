@@ -10,12 +10,14 @@ This repository includes a set of scripts useful for installing and configuring 
 2. Install Ubuntu for WSL.
 3. Start Ubuntu to initialize it and setup your WSL user.
 4. Clone the repo.
+    - `git clone https://github.com/patrickcarlohickman/wsl-setup.git`
 5. Go to the `setup` directory.
-6. Copy `.env.example` to `.env` and update the values inside.
-7. Go through the files in the `resources` directories and update them with your information. Required:
-    - `resources/bash/user/.gitconfig`
-    - `resources/wsl/wsl-sudoers`
-8. Run `setup-wsl.sh`.
+    - `cd wsl-setup/setup`
+6. Copy `.env.example` to `.env`.
+    - `cp .env.example .env`
+7. Update the `.env` values.
+8. Go through the files in the `resources` directories and update them with your information.
+9. Run `sudo -i setup-wsl.sh`.
 
 ## What does it do?
 
@@ -27,18 +29,57 @@ This repository includes a set of scripts useful for installing and configuring 
 6. Installs default user files to setup bash aliases, git configuration, git ignore, and a git commit message template.
 7. Creates new SSH keys or copies SSH keys from Windows host.
 8. Installs initial software.
-    - PHP 7.2
+    - phpenv
+    - PHP (version set in .env)
     - Apache
     - MySQL 5.7
     - Redis
     - Composer
     - NVM
+    - Yarn
     - Ngrok
     - FreeTDS
 
+## Startup
+
+There is a startup script installed at `/usr/local/bin/startup.sh` that is used to start up all the services (apache, mysql, redis, php-fpm, etc.). There is also a `startup` alias defined that runs this script as sudo. When you connect to your WSL instance, just run `startup` and it will (re)start all the services.
+
 ## MySQL
 
-`setup/resources/mysql/create-databases-mysql.sh` is available to create databases in MySQL. It reads from the `create-databases-mysql.sql` file in the same directory. To add new databases, just update `create-databases-mysql.sql` and run the `create-databases-mysql.sh` script.
+The `setup/resources/mysql/create-databases-mysql.sh` script is available to create databases in MySQL. It reads from the `create-databases-mysql.sql` file in the same directory. To add new databases, just update `setup/resources/mysql/create-databases-mysql.sql` and run the `setup/resources/mysql/create-databases-mysql.sh` script.
+
+## PHP
+
+This setup is designed to allow multiple versions of PHP running at the same time. This is done through [phpenv](https://github.com/phpenv/phpenv). While you can use phpenv directly to install new versions of PHP, it is better to use the install script at `setup/resources/php/install-php.sh`. This script will:
+
+- Automatically resolve certain build issues with building older versions of PHP (older dependencies, expecting files in certain locations, etc.)
+- Setup a new PHP log file for the version installed
+- Configure the PHP-FPM user and listener
+- Install the PHP-FPM service script
+- Update the `/usr/local/bin/startup.sh` script to include the new PHP-FPM service
+
+## Enable new websites
+
+When you setup a new website in your vhost directory (`/var/www/vhost` or the value specified in the `VHOST_DIRECTORY` variable in the `.env` file), you'll need a new apache config file for the new website. To set this up, use the site install script at `setups/resources/apache/make-site.sh`. This script will:
+
+- Create a new apache site config file at `/etc/apache2/sites-available`. This config file will:
+    - Enable a new virtual host for `your-domain.test` and `www.your-domain.test`
+    - Enable http and https
+    - Configure the site to use the PHP version specified
+    - Configure new error and access logs for the site
+    - Add a forwarding host fix for ngrok
+- Add the new site to the ngrok config file
+- Generate the openssl private key if one doesn't exist
+- (Re)generate the openssl self-signed cert with the new site added
+
+Usage: `make-site.sh < domain > < php_version > [ directory [ ngrok_start_name ] ]`
+
+Notes:
+
+- The script assumes the document root directory is at `<domain>/public`. If that is not the document root, specify the directory using the third parameter.
+- The ngrok start name defaults to the domain. Use the fourth parameter to change this.
+- Make sure to remember to update the host computer hosts file to access the new website at the new domain.
+- If using https, the SSL cert is self-signed, so the browser will complain about it, but you should be able to click through.
 
 ## Notes
 
