@@ -209,6 +209,12 @@ function is_yarn_installed {
   [[ -n "$(which yarn)" ]] && echo "yes"
 }
 
+function is_phpenv_installed {
+  local -r PHPENV_ROOT="${PHPENV_ROOT:-/opt/phpenv}"
+
+  [[ -s "${PHPENV_ROOT}/bin/phpenv" ]] && [[ -n "$(which phpenv)" ]] && echo "yes"
+}
+
 function ensure_php_executable {
   local php="$@"
 
