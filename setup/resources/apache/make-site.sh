@@ -145,4 +145,4 @@ log_info "Restarting Apache server."
 # Restart apache to make the site available.
 service apache2 restart
 
-log_info "Domain ${NEW_SITE_DOMAIN} is now available."
+log_info "Domain ${NEW_SITE_DOMAIN} is now available at ${NEW_SITE_DOMAIN}.test. Remember to update your host hosts file."
