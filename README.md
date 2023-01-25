@@ -17,7 +17,9 @@ This repository includes a set of scripts useful for installing and configuring 
     - `cp .env.example .env`
 7. Update the `.env` values.
 8. Go through the files in the `resources` directories and update them with your information.
-9. Run `sudo -i setup-wsl.sh`.
+9. Run `sudo -i $HOME/wsl-setup/setup/setup-wsl.sh`. This will take a while to run.
+10. Exit WSL and reconnect, or just start a new shell with `exec $SHELL -l`.
+11. Run `startup` to ensure all your services are up and running.
 
 ## What does it do?
 
