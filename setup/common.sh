@@ -169,6 +169,13 @@ function ensure_variable_set {
   fi
 }
 
+function ensure_package_available {
+  if [[ -z "$(apt-cache search --names-only "^${1}")" ]]; then
+    log_error "Package ${1} was not found as an installable package."
+    exit 1
+  fi
+}
+
 function is_mysql_installed {
   dpkg -l | egrep "ii\s*mysql-server\S*\s+" > /dev/null
 
