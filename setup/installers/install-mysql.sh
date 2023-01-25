@@ -7,20 +7,24 @@ ensure_not_installed "MySQL"
 ensure_variable_set "WSL_USER"
 
 readonly WSL_USER
+readonly MYSQL_VERSION="${MYSQL_VERSION:-8.0}"
+readonly MYSQL_PACKAGE="mysql-server-${MYSQL_VERSION}"
 readonly MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-root}"
 readonly MYSQL_USER_NAME="${MYSQL_USER_NAME:-homestead}"
 readonly MYSQL_USER_PASSWORD="${MYSQL_USER_PASSWORD:-secret}"
 readonly WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
 
+ensure_package_available "${MYSQL_PACKAGE}"
+
 # Set the root password for when mysql is installed
-debconf-set-selections <<< "mysql-server-5.7 mysql-server/root_password password ${MYSQL_ROOT_PASSWORD}"
-debconf-set-selections <<< "mysql-server-5.7 mysql-server/root_password_again password ${MYSQL_ROOT_PASSWORD}"
+debconf-set-selections <<< "${MYSQL_PACKAGE} mysql-server/root_password password ${MYSQL_ROOT_PASSWORD}"
+debconf-set-selections <<< "${MYSQL_PACKAGE} mysql-server/root_password_again password ${MYSQL_ROOT_PASSWORD}"
 
 log_info "Installing MySQL. This may take a few minutes..."
 
 # Install mysql
 apt-get -yqq update
-DEBIAN_FRONTEND=noninteractive apt-get -y install mysql-server-5.7
+DEBIAN_FRONTEND=noninteractive apt-get -y install ${MYSQL_PACKAGE}
 
 log_info "Setting up mysql user home directory."
 
