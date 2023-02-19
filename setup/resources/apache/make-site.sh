@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 source "$(dirname "$(dirname "$(readlink -f "${0}")")")/init-resource.sh"
 
