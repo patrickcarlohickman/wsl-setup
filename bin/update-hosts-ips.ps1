@@ -4,7 +4,7 @@
 $wslTld = 'test'
 
 $file = $env:windir + '\System32\drivers\etc\hosts'
-$regex = '(?<=^\s*)([^\s]+)(?=.*\.' + $wslTld + '(\s+|$))'
+$regex = '(?<=^\s*)(\d+\.\d+\.\d+\.\d+)(?=.*\.' + $wslTld + '(\s+|$))'
 
 # Get the current IP address of the wsl instance.
 $wslIp = $(wsl -e hostname -I).Trim()
