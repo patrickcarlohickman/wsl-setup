@@ -20,6 +20,7 @@ This repository includes a set of scripts useful for installing and configuring 
 9. Run `sudo -i $HOME/wsl-setup/setup/setup-wsl.sh`. This will take a while to run.
 10. Exit WSL and reconnect, or just start a new shell with `exec $SHELL -l`.
 11. Run `startup` to ensure all your services are up and running.
+12. Copy the scripts in the `bin` directory to somewhere on the Windows host machine.
 
 ## What does it do?
 
@@ -80,8 +81,19 @@ Notes:
 
 - The script assumes the document root directory is at `<domain>/public`. If that is not the document root, specify the directory using the third parameter.
 - The ngrok start name defaults to the domain. Use the fourth parameter to change this.
-- Make sure to remember to update the host computer hosts file to access the new website at the new domain.
+- Make sure to remember to update the host computer hosts file to access the new website at the new domain (`bin/add-host.bat` helps with this).
 - If using https, the SSL cert is self-signed, so the browser will complain about it, but you should be able to click through.
+
+## Windows Scripts
+
+There are a couple useful helper scripts for Windows located in the `bin` directory. These are meant to be run from the Windows host machine, so they will need to be copied somewhere onto the Windows host machine. Ex: `cp -r bin /mnt/c/WSL`
+
+- `update-hosts-ips.bat`
+    - With WSL2, you cannot access the domains hosted on the WSL machine using the loopback address (127.0.0.1) in the Windows hosts file. The Windows hosts file will need to be kept up-to-date with the IP address of the WSL machine.
+    - This script will get the current WSL IP address and update the hosts file with it for any host under the `.test` TLD.
+- `add-host.bat`
+    - When you add a new site inside of WSL, you'll need to add a new hosts entry in the Windows hosts file to point to the new site.
+    - This script will prompt for the new host name and add it to the end of the Windows hosts file with the WSL IP address already assigned.
 
 ## Notes
 
