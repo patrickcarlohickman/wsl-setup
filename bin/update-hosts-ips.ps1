@@ -7,7 +7,7 @@ $file = $env:windir + '\System32\drivers\etc\hosts'
 $regex = '(?<=^\s*)(\d+\.\d+\.\d+\.\d+)(?=.*\.' + $wslTld + '(\s+|$))'
 
 # Get the current IP address of the wsl instance.
-$wslIp = $(wsl -e hostname -I).Trim()
+$wslIp = $(wsl -e /bin/bash -c "ip -4 -o address show eth0 | grep -oP """"(?<=inet\s)\d+(\.\d+){3}""""")
 
 Write-Host "Updating hosts file for TLD [.$wslTld] with WSL IP [$wslIp]."
 

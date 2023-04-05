@@ -13,7 +13,7 @@ if (!$PSBoundParameters.ContainsKey('wslHost')) {
 $file = $env:windir + '\System32\drivers\etc\hosts'
 
 # Get the current IP address of the wsl instance.
-$wslIp = $(wsl -e hostname -I)
+$wslIp = $(wsl -e /bin/bash -c "ip -4 -o address show eth0 | grep -oP """"(?<=inet\s)\d+(\.\d+){3}""""")
 
 # Read the last byte of the file.
 $size = 1
