@@ -242,8 +242,14 @@ chmod 666 "${PHPENV_PHP_LOG_FILE}"
 
 log_info "Enabling the PHP error log file."
 
-# Create the error log mod file and enable it for all SAPIs.
-echo "error_log=\"${PHPENV_PHP_LOG_FILE}\"" > "${PHP_VERSION_ROOT}/etc/conf.d/error_log.ini"
+# Create the error log ini file and enable it for all SAPIs.
+echo "error_log = \"${PHPENV_PHP_LOG_FILE}\"" > "${PHP_VERSION_ROOT}/etc/conf.d/error_log.ini"
+
+# Create the display errors ini file and enable it for all SAPIs.
+cat << EOF > "${PHP_VERSION_ROOT}/etc/conf.d/display_errors.ini"
+display_errors = On
+display_startup_errors = On
+EOF
 
 log_info "Configuring PHP-FPM for PHP ${PHP_VERSION_INSTALL}."
 
