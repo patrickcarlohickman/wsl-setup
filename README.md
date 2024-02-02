@@ -59,7 +59,6 @@ This setup is designed to allow multiple versions of PHP running at the same tim
 - Setup a new PHP log file for the version installed
 - Configure the PHP-FPM user and listener
 - Install the PHP-FPM service script
-- Update the `/usr/local/bin/startup.sh` script to include the new PHP-FPM service
 
 ## Enable new websites
 

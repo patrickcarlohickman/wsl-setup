@@ -267,7 +267,6 @@ readonly PHPFPM_ROOT="${PHP_VERSION_ROOT}"
 readonly PHPFPM_SOCK="var/run/php-fpm.sock"
 readonly PHPFPM_SERVICE_FILE="${PHPFPM_ROOT}/etc/init.d/php-fpm"
 readonly PHPFPM_SERVICE_NAME="php-fpm-${PHP_VERSION_INSTALL}"
-readonly STARTUP_SCRIPT="/usr/local/bin/startup.sh"
 
 # PHP-FPM config location changed in 7.0.
 # See: https://github.com/php/php-src/blob/php-7.0.0/sapi/fpm/Makefile.frag
@@ -296,13 +295,5 @@ fi
 log_info "Installing PHP-FPM service script as ${PHPFPM_SERVICE_NAME}."
 
 cp "${PHPFPM_SERVICE_FILE}" "/etc/init.d/${PHPFPM_SERVICE_NAME}"
-
-if [ -f "${STARTUP_SCRIPT}" ]; then
-  log_info "Adding PHP-FPM service ${PHPFPM_SERVICE_NAME} to startup script."
-
-  cat << EOF >> "${STARTUP_SCRIPT}"
-service ${PHPFPM_SERVICE_NAME} restart
-EOF
-fi
 
 log_info "PHP version ${PHP_VERSION_INSTALL} install complete!"

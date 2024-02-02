@@ -22,3 +22,10 @@ done
 service redis-server restart
 service mysql restart
 service apache2 restart
+
+# Loop through all the PHP-FPM services and restart them.
+for phpfpm in `service --status-all 2>&1 | grep -o php-fpm.*`
+do
+  echo "Restarting service $phpfpm."
+  service $phpfpm restart
+done
