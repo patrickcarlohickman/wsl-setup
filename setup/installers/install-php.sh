@@ -18,6 +18,9 @@ readonly PHP_VERSION="${REQUESTED_VERSION}"
 readonly PHP_VERSION_COMPARE="${PHP_VERSION/snapshot/.9999}"
 readonly PHPENV_ROOT="${PHPENV_ROOT:-/opt/phpenv}"
 
+shift
+readonly PHP_OPTIONS=( "$@" )
+
 if [[ ! "${PHP_VERSION}" =~ ^[0-9]+(\.[0-9]+)*(snapshot)?$ ]]; then
   log_error "Version parameter [${PHP_VERSION}] is not in the correct format."
   exit 1
@@ -34,7 +37,7 @@ ensure_not_installed "phpenv_version-${PHP_VERSION_INSTALL}" "PHP version [${PHP
 
 log_info "Checking and installing needed dependencies."
 
-BUILD_CONFIGURE_OPTIONS=()
+BUILD_CONFIGURE_OPTIONS=( "${PHP_OPTIONS[@]}" )
 BUILD_PKG_CONFIG_PATH=()
 
 # PHP < 7.1.17, 7.2.0 - 7.2.4
