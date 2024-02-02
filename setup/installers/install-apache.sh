@@ -60,6 +60,11 @@ log_info "Updating Apache user and group."
 # Change the default apache user and group to the WSL user.
 sed -i "s/www-data/${WSL_USER}/g" /etc/apache2/envvars
 
+log_info "Enabling Apache /server-status url from host."
+
+# Enable the /server-status url to be access from the host machine.
+sed -i "s/Require local/#Require local/g" /etc/apache2/mods-available/status.conf
+
 log_info "Starting Apache."
 
 # Make sure apache is running with the new config
