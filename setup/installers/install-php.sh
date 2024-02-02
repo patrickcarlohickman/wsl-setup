@@ -165,6 +165,13 @@ if version_compare "${PHP_VERSION_COMPARE}" "lt" "8.1.0"; then
     make install
     cd -
     rm -rf "${OPENSSL_TMP}"
+
+    # Add a new linker config with the new openssl lib directory. Without
+    # this, the new openssl executable can't find the shared libraries.
+    cat << EOF > "/etc/ld.so.conf.d/openssl-${OPENSSL_VERSION_INSTALL}.conf"
+${OPENSSL_PREFIX}/lib
+EOF
+    ldconfig
   fi
 
   if [[ -n "${USE_CUSTOM_OPENSSL}" ]]; then
