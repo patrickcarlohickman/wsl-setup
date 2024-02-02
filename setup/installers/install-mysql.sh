@@ -7,6 +7,7 @@ ensure_not_installed "MySQL"
 ensure_variable_set "WSL_USER"
 
 readonly WSL_USER
+readonly MYSQL_AUTH_PLUGIN
 readonly MYSQL_VERSION="${MYSQL_VERSION:-8.0}"
 readonly MYSQL_PACKAGE="mysql-server-${MYSQL_VERSION}"
 readonly MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-root}"
@@ -30,6 +31,16 @@ log_info "Setting up mysql user home directory."
 
 # Set the home directory for the mysql user to prevent startup warnings.
 usermod -d /var/lib/mysql/ mysql
+
+# Set the default authentication plugin if specified.
+if [[ -n "${MYSQL_AUTH_PLUGIN}" ]]; then
+  log_info "Setting up mysql default authentication plugin."
+
+  cat << EOF > "/etc/mysql/mysql.conf.d/auth.cnf"
+[mysqld]
+default_authentication_plugin=${MYSQL_AUTH_PLUGIN}
+EOF
+fi
 
 log_info "Starting MySQL server."
 
@@ -57,6 +68,13 @@ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
 
 log_info "Securing MySQL install and initializing users."
 
+# Identify the user with the authentication plugin if specified.
+if [[ -n "${MYSQL_AUTH_PLUGIN}" ]]; then
+  readonly MYSQL_USER_IDENTIFY_WITH="WITH ${MYSQL_AUTH_PLUGIN}"
+else
+  readonly MYSQL_USER_IDENTIFY_WITH=""
+fi
+
 # Run initial queries to secure the install and to create the initial user
 mysql << EOF
 DELETE FROM mysql.user WHERE user = '';
@@ -65,7 +83,7 @@ DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE db = 'test' OR db = 'test\\_%';
 FLUSH PRIVILEGES;
 
-CREATE USER '${MYSQL_USER_NAME}'@'%' IDENTIFIED BY '${MYSQL_USER_PASSWORD}';
+CREATE USER '${MYSQL_USER_NAME}'@'%' IDENTIFIED ${MYSQL_USER_IDENTIFY_WITH} BY '${MYSQL_USER_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
 
