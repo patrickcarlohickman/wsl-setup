@@ -26,3 +26,91 @@ apt-get update
 apt-get install docker-ce docker-ce-cli containerd.io
 =====================================
 =====================================
+
+=====================================
+pecl-build
+=====================================
+sudo -i git clone https://github.com/crocos/pecl-build.git $PHPENV_ROOT/plugins/pecl-build
+
+- modify bin/pecl-build#L103 to use case-insensitive grep
+
+may want to fork and use own repo
+=====================================
+=====================================
+
+=====================================
+ext-imagick
+=====================================
+- requires pecl-build
+
+sudo apt-get update
+sudo apt-get install libmagickwand-dev
+
+modify /etc/ImageMagick-6/policy.xml:
+<policy domain="resource" name="memory" value="10GiB"/>
+<policy domain="resource" name="map" value="10GiB"/>
+<policy domain="resource" name="width" value="1GiP"/>
+<policy domain="resource" name="height" value="1GiP"/>
+
+Better idea: try to create a temp policy.xml and use the MAGICK_CONFIGURE_PATH environment variable:
+MAGICK_CONFIGURE_PATH='/my/path/:/etc/ImageMagick-6/'
+
+for one version:
+sudo -i phpenv pecl imagick -j <php-version>
+
+for all versions:
+sudo -i phpenv pecl imagick -a
+=====================================
+=====================================
+
+=====================================
+php - openssl
+=====================================
+# setup new custom openssl installs to point to system certs
+cd /opt/openssl-1.1.1s/
+rmdir certs/
+ln -s /etc/ssl/certs/ certs
+rmdir private/
+ln -s /etc/ssl/private/ private
+=====================================
+=====================================
+
+=====================================
+system - curl
+=====================================
+# install latest Mozilla CA certificate store
+curl --remote-name https://curl.se/ca/cacert.pem
+sudo cp cacert.pem /etc/ssl/certs/
+
+maybe create a helper script to periodically keep this up to date
+=====================================
+=====================================
+
+=====================================
+mysql
+=====================================
+# allow installer to specify port
+cat /etc/mysql/mysql.conf.d/z_port.cnf
+[mysqld]
+port=3307
+
+[client]
+port=3307
+
+# use native passwords in mysql 8.0
+cat /etc/mysql/mysql.conf.d/auth.cnf
+[mysqld]
+default_authentication_plugin=mysql_native_password
+
+CREATE USER '${MYSQL_USER_NAME}'@'%' IDENTIFIED WITH mysql_native_password BY '${MYSQL_USER_PASSWORD}';
+=====================================
+=====================================
+
+=====================================
+apache
+=====================================
+Update /etc/apache2/mods-available/status.conf to comment out line restricting server-status to localhost.
+
+This allows visiting [wsl-ip]/server-status from host machine to see apache server status.
+=====================================
+=====================================
