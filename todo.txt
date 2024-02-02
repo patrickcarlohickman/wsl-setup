@@ -64,18 +64,6 @@ sudo -i phpenv pecl imagick -a
 =====================================
 
 =====================================
-php - openssl
-=====================================
-# setup new custom openssl installs to point to system certs
-cd /opt/openssl-1.1.1s/
-rmdir certs/
-ln -s /etc/ssl/certs/ certs
-rmdir private/
-ln -s /etc/ssl/private/ private
-=====================================
-=====================================
-
-=====================================
 system - curl
 =====================================
 # install latest Mozilla CA certificate store

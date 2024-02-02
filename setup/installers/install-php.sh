@@ -169,6 +169,14 @@ if version_compare "${PHP_VERSION_COMPARE}" "lt" "8.1.0"; then
     cd -
     rm -rf "${OPENSSL_TMP}"
 
+    # Update the custom openssl version to link to the system "certs" folder.
+    rmdir "${OPENSSL_PREFIX}/certs/"
+    ln -s /etc/ssl/certs/ "${OPENSSL_PREFIX}/certs"
+
+    # Update the custom openssl version to link to the system "private" folder.
+    rmdir "${OPENSSL_PREFIX}/private/"
+    ln -s /etc/ssl/private/ "${OPENSSL_PREFIX}/private"
+
     # Add a new linker config with the new openssl lib directory. Without
     # this, the new openssl executable can't find the shared libraries.
     cat << EOF > "/etc/ld.so.conf.d/openssl-${OPENSSL_VERSION_INSTALL}.conf"
