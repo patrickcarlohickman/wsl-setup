@@ -36,7 +36,7 @@ usermod -d /var/lib/mysql/ mysql
 if [[ -n "${MYSQL_AUTH_PLUGIN}" ]]; then
   log_info "Setting up mysql default authentication plugin."
 
-  cat << EOF > "/etc/mysql/mysql.conf.d/auth.cnf"
+  cat << EOF > "/etc/mysql/mysql.conf.d/z_auth.cnf"
 [mysqld]
 default_authentication_plugin=${MYSQL_AUTH_PLUGIN}
 EOF
