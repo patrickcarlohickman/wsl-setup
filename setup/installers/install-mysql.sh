@@ -13,6 +13,7 @@ readonly MYSQL_PACKAGE="mysql-server-${MYSQL_VERSION}"
 readonly MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-root}"
 readonly MYSQL_USER_NAME="${MYSQL_USER_NAME:-homestead}"
 readonly MYSQL_USER_PASSWORD="${MYSQL_USER_PASSWORD:-secret}"
+readonly MYSQL_PORT="${MYSQL_PORT:-3306}"
 readonly WSL_USER_DIRECTORY="$(wsl_user_directory "${WSL_USER}")"
 
 ensure_package_available "${MYSQL_PACKAGE}"
@@ -39,6 +40,19 @@ if [[ -n "${MYSQL_AUTH_PLUGIN}" ]]; then
   cat << EOF > "/etc/mysql/mysql.conf.d/z_auth.cnf"
 [mysqld]
 default_authentication_plugin=${MYSQL_AUTH_PLUGIN}
+EOF
+fi
+
+# Set the port to use if different than the default.
+if [[ "${MYSQL_PORT}" -ne "3306" ]]; then
+  log_info "Setting up mysql port config file."
+
+  cat << EOF > "/etc/mysql/mysql.conf.d/z_port.cnf"
+[mysqld]
+port=${MYSQL_PORT}
+
+[client]
+port=${MYSQL_PORT}
 EOF
 fi
 

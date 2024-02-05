@@ -73,16 +73,3 @@ sudo cp cacert.pem /etc/ssl/certs/
 maybe create a helper script to periodically keep this up to date
 =====================================
 =====================================
-
-=====================================
-mysql
-=====================================
-# allow installer to specify port
-cat /etc/mysql/mysql.conf.d/z_port.cnf
-[mysqld]
-port=3307
-
-[client]
-port=3307
-=====================================
-=====================================
