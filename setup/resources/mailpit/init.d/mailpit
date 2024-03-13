@@ -1,0 +1,54 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          mailpit
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start mailpit at boot time.
+# Description:       Enable mailpit.
+### END INIT INFO
+
+mailpit_PATH=/opt/mailpit
+mailpit_BIN=/usr/local/bin/mailpit
+mailpit_USER=patrick
+
+mailpit_PID=${mailpit_PATH}/mailpit.pid
+mailpit_OPTS="-d ${mailpit_PATH}/mailpit.db"
+# mailpit_OPTS="-auth-file=$mailpit_PATH/auth -api-bind-addr=0.0.0.0:8025 -ui-bind-addr=0.0.0.0:8025"
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting mailpit."
+    start-stop-daemon --start --pidfile $mailpit_PID --make-pidfile --user $mailpit_USER --background --exec $mailpit_BIN -- $mailpit_OPTS
+    ;;
+  stop)
+    if [ -f $mailpit_PID ]; then
+      echo "Stopping mailpit.";
+      start-stop-daemon --stop --pidfile $mailpit_PID
+    else
+      echo "mailpit is not running.";
+    fi
+    ;;
+  restart)
+    echo "Restarting mailpit."
+    start-stop-daemon --stop --pidfile $mailpit_PID
+    start-stop-daemon --start --pidfile $mailpit_PID --make-pidfile --user $mailpit_USER --background --exec $mailpit_BIN -- $mailpit_OPTS
+    ;;
+  status)
+    if [ -f $mailpit_PID ]; then
+      echo "mailpit is running.";
+    else
+      echo "mailpit is not running.";
+      exit 3
+    fi
+    ;;
+  *)
+    echo "Usage: /etc/init.d/mailpit {start|stop|status|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
