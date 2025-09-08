@@ -299,6 +299,7 @@ function install_global_php {
   set +a
 
   PHP_VERSION="\${GLOBAL_PHP_VERSION:-latest}"
+  PHP_OPTIONS="\${GLOBAL_PHP_OPTIONS}"
 
   log_info "Installing PHP version \${PHP_VERSION} globally."
 
@@ -308,7 +309,7 @@ function install_global_php {
     log_info "Latest PHP version resolved to \${PHP_VERSION}."
   fi
 
-  run_installer "install-php.sh" "\${PHP_VERSION}"
+  run_installer "install-php.sh" "\${PHP_VERSION}" "\${PHP_OPTIONS}"
 
   if [[ -n "\$(is_phpenv_version_installed \${PHP_VERSION})" ]]; then
     log_info "Setting PHP version \${PHP_VERSION} as global."
