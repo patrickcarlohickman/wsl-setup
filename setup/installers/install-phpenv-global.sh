@@ -7,6 +7,7 @@ ensure_not_installed "PHPENV"
 
 readonly PHPENV_ROOT="${PHPENV_ROOT:-/opt/phpenv}"
 readonly PHPENV_PROFILE="${PHPENV_PROFILE:-/etc/profile.d/phpenv.sh}"
+readonly PHPENV_PECL_BUILD="${PHPENV_PECL_BUILD}"
 
 log_info "Installing PHPENV globally. This may take a few minutes..."
 
@@ -20,6 +21,12 @@ if [[ -d "${PHPENV_ROOT}/plugins/phpenv-composer" ]]; then
   log_info "Removing phpenv-composer plugin."
 
   rm -rf phpenv-composer "${PHPENV_ROOT}/plugins/phpenv-composer"
+fi
+
+if [[ -n "${PHPENV_PECL_BUILD}" ]]; then
+  log_info "Installing pecl-build plugin."
+
+  git clone "${PHPENV_PECL_BUILD}" "${PHPENV_ROOT}/plugins/pecl-build"
 fi
 
 log_info "Setting PHPENV directory permissions."

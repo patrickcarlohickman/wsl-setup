@@ -28,17 +28,6 @@ apt-get install docker-ce docker-ce-cli containerd.io
 =====================================
 
 =====================================
-pecl-build
-=====================================
-sudo -i git clone https://github.com/crocos/pecl-build.git $PHPENV_ROOT/plugins/pecl-build
-
-- modify bin/pecl-build#L103 to use case-insensitive grep
-
-may want to fork and use own repo
-=====================================
-=====================================
-
-=====================================
 ext-imagick
 =====================================
 - requires pecl-build
