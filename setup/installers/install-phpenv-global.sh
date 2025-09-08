@@ -70,8 +70,10 @@ log_info "Installing common dependencies for building PHP."
 ${PHPENV_ROOT}/plugins/php-build/install-dependencies.sh
 
 # Install additional dependencies missed by php-build
+# - libsodium-dev is needed for building --with-sodium
+# - libgmp-dev is needed for building --with-gmp
 apt-get -yqq update
-DEBIAN_FRONTEND=noninteractive apt-get -y install libltdl-dev --no-install-recommends
+DEBIAN_FRONTEND=noninteractive apt-get -y install libltdl-dev libsodium-dev libgmp-dev --no-install-recommends
 
 # Generate, modify, and install the icu-config script (needed for intl).
 readonly ICU_VERSION="$(dpkg -l | egrep "ii\s*libicu-dev(:|\s)" | awk '{print $3}' | cut -d '-' -f 1)"
