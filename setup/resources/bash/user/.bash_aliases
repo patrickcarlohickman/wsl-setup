@@ -1,7 +1,11 @@
 alias startup="sudo /usr/local/bin/startup.sh"
 
-alias phpunit="./vendor/bin/phpunit"
 alias phpcs="./vendor/bin/phpcs"
+alias pint="./vendor/bin/pint"
+alias pinttest="./vendor/bin/pint --test"
+alias phpstan="./vendor/bin/phpstan"
+alias phpunit="./vendor/bin/phpunit"
+alias pest="./vendor/bin/pest"
 alias paratest="./vendor/bin/paratest"
 
 alias gs="git status"
