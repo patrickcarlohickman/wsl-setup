@@ -26,7 +26,7 @@ log_info "Faking NVM profile."
 # to determine whether or not to add in bash completion.
 if [[ "${NVM_PROFILE##*/}" != ".bashrc" ]]; then
   NVM_PROFILE="/tmp/.bashrc"
-  rm "${NVM_PROFILE}"
+  rm -f "${NVM_PROFILE}"
 fi
 
 # Make sure the profile file exists.
