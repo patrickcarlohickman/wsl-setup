@@ -28,6 +28,9 @@ log_info "Installing MySQL. This may take a few minutes..."
 apt-get -yqq update
 DEBIAN_FRONTEND=noninteractive apt-get -y install ${MYSQL_PACKAGE}
 
+# Make sure mysql is not automatically running after the install.
+service mysql stop
+
 log_info "Setting up mysql user home directory."
 
 # Set the home directory for the mysql user to prevent startup warnings.
@@ -75,7 +78,7 @@ cp ~root/.my.cnf "${WSL_USER_DIRECTORY}/.my.cnf"
 chmod 600 "${WSL_USER_DIRECTORY}/.my.cnf"
 chown "${WSL_USER}":"${WSL_USER}" "${WSL_USER_DIRECTORY}/.my.cnf"
 
-log_info "Updating MySQL timezone information."
+log_info "Updating MySQL timezone information. Warnings about skipped files can be ignored."
 
 # Update the timezone information
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
