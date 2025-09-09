@@ -231,9 +231,9 @@ function is_yarn_installed {
 }
 
 function is_phpenv_installed {
-  local -r PHPENV_ROOT="${PHPENV_ROOT:-/opt/phpenv}"
+  local -r LOCAL_PHPENV_ROOT="${PHPENV_ROOT:-/opt/phpenv}"
 
-  [[ -s "${PHPENV_ROOT}/bin/phpenv" ]] && [[ -n "$(which phpenv)" ]] && echo "yes"
+  [[ -s "${LOCAL_PHPENV_ROOT}/bin/phpenv" ]] && [[ -n "$(which phpenv)" ]] && echo "yes"
 }
 
 function is_phpenv_version_installed {
