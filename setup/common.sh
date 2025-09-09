@@ -285,11 +285,65 @@ function ensure_file_missing {
   fi
 }
 
+function windows_mount {
+  local windir
+  local drive
+
+  # Assign on separate line in order to capture exit code.
+  windir="$(which explorer.exe)"
+
+  # First try to get Windows directory from which command.
+  if [[ $? -eq 0 ]] && [[ -n "${windir}" ]]; then
+    windir="$(dirname "$(dirname "${windir}")")"
+
+    if [[ -d "${windir}" ]]; then
+      echo "${windir}"
+      return 0
+    fi
+  fi
+
+  # If Windows is not in path, fallback to /mnt loop.
+  for drive in /mnt/*; do
+    if [[ -x "${drive}/Windows/explorer.exe" ]]; then
+      echo "${drive}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+function windows_cmd_exe {
+  local -r CMD_EXE="$(windows_mount)/Windows/System32/cmd.exe"
+
+  if [[ -x "${CMD_EXE}" ]]; then
+    echo "${CMD_EXE}"
+    return 0
+  fi
+
+  return 1
+}
+
+function windows_cmd {
+  local -r CMD="${1}"
+  local -r CMD_EXE="$(windows_cmd_exe)"
+
+  if [[ -z "${CMD_EXE}" ]]; then
+    return 1
+  fi
+
+  local -r CMD_DIR="$(dirname "${CMD_EXE}")"
+
+  if [[ -d "${CMD_DIR}" ]]; then
+    echo "$(pushd ${CMD_DIR} > /dev/null; ./cmd.exe /C "${CMD}"; popd > /dev/null)"
+  fi
+}
+
 function windows_env_value {
   local -r VAR="${1}"
-  local value="$(/mnt/c/Windows/System32/cmd.exe /C "echo %${VAR}%")"
+  local -r VALUE="$(windows_cmd "if defined ${VAR} (echo %${VAR}%) else (echo.)")"
 
-  echo "${value//$'\r'}"
+  echo "${VALUE//$'\r'}"
 }
 
 function version_compare {
