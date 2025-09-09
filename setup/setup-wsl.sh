@@ -39,20 +39,23 @@ function main {
 
   log_info "Installing initial software (PHP, Composer, Apache, Ngrok, MySQL, Redis, NVM, yarn, FreeTDS)."
 
+  # Run installers with no other dependencies.
   run_installer "install-phpenv-global.sh"
-  install_global_php
-  install_composer
-
-  run_installer "install-apache.sh"
   run_installer "install-ngrok.sh"
-
   run_installer "install-mysql.sh"
   run_installer "install-redis.sh"
-
   run_installer "install-nvm-global.sh"
   run_installer "install-yarn.sh"
-
   install_freetds
+
+  # PHP requires PHPENV and ODBC to be installed.
+  install_global_php
+
+  # Composer requires PHP to be installed.
+  install_composer
+
+  # Apache requires PHP to be installed for the PHP module.
+  run_installer "install-apache.sh"
 }
 
 function prepare_installation {
