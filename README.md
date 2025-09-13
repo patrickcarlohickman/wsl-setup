@@ -35,7 +35,7 @@ This repository includes a set of scripts useful for installing and configuring 
     - phpenv
     - PHP (version set in .env)
     - Apache
-    - MySQL 5.7
+    - MySQL (version set in .env)
     - Redis
     - Composer
     - NVM
@@ -63,7 +63,7 @@ This setup is designed to allow multiple versions of PHP running at the same tim
 
 ## Enable new websites
 
-When you setup a new website in your vhost directory (`/var/www/vhost` or the value specified in the `VHOST_DIRECTORY` variable in the `.env` file), you'll need a new apache config file for the new website. To set this up, use the site install script at `setups/resources/apache/make-site.sh`. This script will:
+When you setup a new website in your vhost directory (`/var/www/vhost` or the value specified in the `VHOST_DIRECTORY` variable in the `.env` file), you'll need a new apache config file for the new website. To set this up, use the site install script at `setup/resources/apache/make-site.sh`. This script will:
 
 - Create a new apache site config file at `/etc/apache2/sites-available`. This config file will:
     - Enable a new virtual host for `your-domain.test` and `www.your-domain.test`
