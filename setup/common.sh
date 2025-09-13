@@ -252,6 +252,17 @@ function phpenv_latest_version {
   [[ -n "$(is_phpenv_installed)" ]] && echo "$(phpenv install -l | grep -v snapshot | tail -n 1 | tr -d "[:space:]")"
 }
 
+function nvm_latest_version {
+  local -r LTS="${1}"
+  local lts_switch=""
+
+  if [[ "${LTS}" = "lts" ]]; then
+    lts_switch="--lts"
+  fi
+
+  [[ -n "$(is_nvm_installed)" ]] && echo "$(nvm ls-remote ${lts_switch} | tail -n 1 | tr -d "[:space:]" | cut -d '(' -f 1)"
+}
+
 function ensure_php_executable {
   local php="$@"
 
