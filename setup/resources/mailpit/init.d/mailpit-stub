@@ -1,0 +1,72 @@
+#!/bin/sh /lib/init/init-d-script
+
+### BEGIN INIT INFO
+# Provides:          mailpit
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start mailpit at boot time.
+# Description:       Enable mailpit.
+### END INIT INFO
+
+###
+# This script uses the init-d-script template from the `init-d-script` package.
+# It is used to start and stop the mailpit service.
+#
+# The top portion of the script defines some local helper variables and
+# functions. The bottom portion defines the variables and functions
+# required by the `init-d-script` template to perform the work.
+###
+
+readonly SVC_NAME="stub-service-name"
+readonly SVC_BIN="stub-service-binary"
+readonly SVC_USER="stub-service-user"
+readonly SVC_DIR="stub-service-directory"
+readonly SVC_RUNDIR="${SVC_DIR}/run"
+readonly SVC_PIDFILE="${SVC_RUNDIR}/${SVC_NAME}.pid"
+
+ensure_rundir_exists() {
+  if [ ! -d "${SVC_RUNDIR}" ]; then
+    mkdir -p "${SVC_RUNDIR}" -m 0755
+    chown ${SVC_USER}:${SVC_USER} "${SVC_RUNDIR}"
+  fi
+}
+
+remove_stale_pid_file() {
+  if [ ! -f "${SVC_PIDFILE}" ]; then
+    return 0
+  fi
+
+  local svc_pid="$(cat ${SVC_PIDFILE})"
+  local pid_cmd="$(ps -p ${svc_pid} -o comm=)"
+
+  if [ "${pid_cmd}" != "${SVC_NAME}" ]; then
+    echo "Removing stale pid file [${SVC_PIDFILE}]."
+    rm -f "${SVC_PIDFILE}"
+  fi
+}
+
+prepare_pid_file() {
+  ensure_rundir_exists
+
+  remove_stale_pid_file
+}
+
+######################################################################
+# Define the variables and functions to be used by the init-d-script.
+######################################################################
+
+DESC="Mailpit email testing server"
+DAEMON="${SVC_BIN}"
+PIDFILE="${SVC_PIDFILE}"
+DAEMON_ARGS="-d ${SVC_DIR}/${SVC_NAME}.db"
+START_ARGS="--background --make-pidfile --chuid $SVC_USER"
+
+do_start_prepare() {
+    prepare_pid_file
+}
+
+do_restart_prepare() {
+    prepare_pid_file
+}

@@ -42,6 +42,7 @@ This repository includes a set of scripts useful for installing and configuring 
     - Yarn
     - Ngrok
     - FreeTDS
+    - Mailpit
 
 ## Startup
 

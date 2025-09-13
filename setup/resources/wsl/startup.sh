@@ -29,3 +29,5 @@ do
   echo "Restarting service $phpfpm."
   service $phpfpm restart
 done
+
+service mailpit restart

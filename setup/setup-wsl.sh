@@ -37,7 +37,7 @@ function main {
   log_info "Installing user SSH keys."
   install_ssh_keys
 
-  log_info "Installing initial software (PHP, Composer, Apache, Ngrok, MySQL, Redis, NVM, yarn, FreeTDS)."
+  log_info "Installing initial software (PHP, Composer, Apache, Ngrok, MySQL, Redis, NVM, yarn, Mailpit, FreeTDS)."
 
   # Run installers with no other dependencies.
   run_installer "install-phpenv-global.sh"
@@ -46,6 +46,7 @@ function main {
   run_installer "install-redis.sh"
   run_installer "install-nvm-global.sh"
   run_installer "install-yarn.sh"
+  run_installer "install-mailpit.sh"
   install_freetds
 
   # PHP requires PHPENV and ODBC to be installed.

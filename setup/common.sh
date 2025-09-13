@@ -202,6 +202,10 @@ function is_ngrok_installed {
   [[ -n "$(which ngrok)" ]] && echo "yes"
 }
 
+function is_mailpit_installed {
+  [[ -n "$(which mailpit)" ]] && echo "yes"
+}
+
 function is_composer_installed {
   [[ -n "$(which composer)" ]] && echo "yes"
 }
